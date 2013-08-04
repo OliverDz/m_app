@@ -60,14 +60,7 @@ var EmployeeView = function(employee) {
                 $('#image').attr('src', imageURI);
                 //---
 var fail, ft, options, params, win;
-  // callback for when the photo has been successfully uploaded:
-  success: function(response) {
-    alert("Your photo has been uploaded!");
-  };
-  // callback if the photo fails to upload successfully.
-  fail: function(error) {
-    alert("An error has occurred: Code = " + error.code);
-  };
+ 
   options = new FileUploadOptions();
   // parameter name of file:
   options.fileKey = "my_image";
@@ -81,7 +74,11 @@ var fail, ft, options, params, win;
   };
   options.params = params;
   ft = new FileTransfer();
-  ft.upload(imageURI, 'http://www.clearmaze.com/temp/photo_booth/save.php', success, fail, options);
+  ft.upload(imageURI, 'http://www.clearmaze.com/temp/photo_booth/save.php', function(response) {
+    alert("Your photo has been uploaded!");
+  }, function(error) {
+    alert("An error has occurred: Code = " + error.code);
+  }, options);
   
                 //---
                 ///temp/photo_booth/save.php
