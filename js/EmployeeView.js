@@ -55,9 +55,30 @@ var EmployeeView = function(employee) {
                             encodingType: 0     // 0=JPG 1=PNG
                         };
 
-        navigator.camera.getPicture(
+        	navigator.camera.getPicture(
             function(imageData) {
                 $('#image').attr('src', "data:image/jpeg;base64," + imageData);
+                //---
+$.ajax({
+    type       : "POST",
+    url        : "http://www.clearmaze.com/temp/photo_booth/save.php",
+    crossDomain: true,
+    beforeSend : function() {$.mobile.loading('show')},
+    complete   : function() {$.mobile.loading('hide')},
+    data       : {imgData : imageData, type : 'data:image/jpeg;base64'},
+    dataType   : 'json',
+    success    : function(response) {
+        //console.error(JSON.stringify(response));
+ 		alert(JSON.stringify(response));
+        alert('Works!');
+    },
+    error      : function() {
+        //console.error("error");
+        alert('Now working!');                  
+    }
+});                     
+                //---
+                ///temp/photo_booth/save.php
             },
             function() {
                 alert('Error taking picture');
