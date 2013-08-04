@@ -50,33 +50,39 @@ var EmployeeView = function(employee) {
             return;
         }
         var options =   {   quality: 50,
-                            destinationType: Camera.DestinationType.DATA_URL,
+                            destinationType: Camera.DestinationType.FILE_URI,
                             sourceType: 1,      // 0:Photo Library, 1=Camera, 2=Saved Photo Album
                             encodingType: 0     // 0=JPG 1=PNG
                         };
 
         	navigator.camera.getPicture(
-            function(imageData) {
-                $('#image').attr('src', "data:image/jpeg;base64," + imageData);
+            function(imageURI) {
+                $('#image').attr('src', imageURI);
                 //---
-$.ajax({
-    type       : "POST",
-    url        : "http://www.clearmaze.com/temp/photo_booth/save.php",
-    crossDomain: true,
-    beforeSend : function() {$.mobile.loading('show')},
-    complete   : function() {$.mobile.loading('hide')},
-    data       : {imgData : imageData, type : 'data:image/jpeg;base64'},
-    dataType   : 'json',
-    success    : function(response) {
-        //console.error(JSON.stringify(response));
- 		alert(JSON.stringify(response));
-        alert('Works!');
-    },
-    error      : function() {
-        //console.error("error");
-        alert('Now working!');                  
-    }
-});                     
+var fail, ft, options, params, win;
+  // callback for when the photo has been successfully uploaded:
+  success: function(response) {
+    alert("Your photo has been uploaded!");
+  };
+  // callback if the photo fails to upload successfully.
+  fail: function(error) {
+    alert("An error has occurred: Code = " + error.code);
+  };
+  options = new FileUploadOptions();
+  // parameter name of file:
+  options.fileKey = "my_image";
+  // name of the file:
+  options.fileName = imageURI.substr(imageURI.lastIndexOf('/') + 1);
+  // mime type:
+  options.mimeType = "text/plain";
+  params = {
+    val1: "some value",
+    val2: "some other value"
+  };
+  options.params = params;
+  ft = new FileTransfer();
+  ft.upload(imageURI, 'http://www.clearmaze.com/temp/photo_booth/save.php', success, fail, options);
+  
                 //---
                 ///temp/photo_booth/save.php
             },
